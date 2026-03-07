@@ -4,7 +4,7 @@ export const createHabitSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1).max(50),
   emoji: z.string().min(1),
-  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+  color: z.string(),
   energyLevel: z.enum(['high', 'medium', 'low']),
   order: z.number().int().min(0),
   createdAt: z.string(),
