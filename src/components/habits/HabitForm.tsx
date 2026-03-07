@@ -43,7 +43,6 @@ export default function HabitForm({ initial, onSubmit, onCancel }: HabitFormProp
             placeholder="예: 개발 공부"
             maxLength={20}
             className="flex-1 h-12 rounded-xl border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-            autoFocus
           />
         </div>
       </div>
@@ -51,25 +50,6 @@ export default function HabitForm({ initial, onSubmit, onCancel }: HabitFormProp
       {/* Emoji Picker */}
       <div>
         <label className="text-sm font-medium text-muted-foreground mb-1.5 block">이모지</label>
-        <div className="flex gap-2 items-center mb-2">
-          <input
-            type="text"
-            value={emoji}
-            onChange={(e) => {
-              const value = e.target.value
-              if (value === '') {
-                setEmoji('')
-                return
-              }
-              const segments = [...new Intl.Segmenter().segment(value)]
-              const last = segments[segments.length - 1]?.segment ?? ''
-              setEmoji(last)
-            }}
-            className="w-12 h-12 rounded-xl border border-border bg-background text-center text-2xl focus:outline-none focus:ring-2 focus:ring-ring"
-            placeholder="😀"
-          />
-          <span className="text-xs text-muted-foreground">직접 입력하거나 아래에서 선택</span>
-        </div>
         <div className="grid grid-cols-10 gap-1">
           {DEFAULT_EMOJIS.map((e) => (
             <button
