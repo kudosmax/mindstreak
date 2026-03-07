@@ -1,11 +1,19 @@
 import NextAuth from 'next-auth'
 import Kakao from 'next-auth/providers/kakao'
 import { DrizzleAdapter } from '@auth/drizzle-adapter'
+import { eq } from 'drizzle-orm'
 import { getDb } from '@/lib/db'
+import { users, accounts, sessions, verificationTokens } from '@/lib/db/schema'
+import { generateNickname } from '@/lib/nicknames'
 
 function createAuthInstance() {
   return NextAuth({
-    adapter: DrizzleAdapter(getDb()),
+    adapter: DrizzleAdapter(getDb(), {
+      usersTable: users,
+      accountsTable: accounts,
+      sessionsTable: sessions,
+      verificationTokensTable: verificationTokens,
+    }),
     providers: [
       Kakao({
         clientId: process.env.KAKAO_CLIENT_ID!,
@@ -15,6 +23,18 @@ function createAuthInstance() {
     session: { strategy: 'database' },
     pages: {
       signIn: '/login',
+    },
+    events: {
+      async createUser({ user }) {
+        if (!user.name) {
+          const db = getDb()
+          const nickname = generateNickname()
+          await db
+            .update(users)
+            .set({ name: nickname })
+            .where(eq(users.id, user.id!))
+        }
+      },
     },
     callbacks: {
       session({ session, user }) {

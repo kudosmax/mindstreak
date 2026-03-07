@@ -3,10 +3,20 @@ import { ENERGY_ORDER } from '@/constants/colors'
 import { getCurrentStreak } from '@/lib/streakCalculator'
 import { format } from 'date-fns'
 
+const ENERGY_SORT_ORDER: Record<EnergyLevel, number> = {
+  low: 0,
+  medium: 1,
+  high: 2,
+}
+
 export function getActiveHabits(habits: Habit[]): Habit[] {
   return habits
     .filter((h) => !h.archivedAt)
-    .sort((a, b) => a.order - b.order)
+    .toSorted((a, b) => {
+      const energyDiff = ENERGY_SORT_ORDER[a.energyLevel] - ENERGY_SORT_ORDER[b.energyLevel]
+      if (energyDiff !== 0) return energyDiff
+      return a.order - b.order
+    })
 }
 
 export function getHabitsForEnergy(habits: Habit[], energyLevel: EnergyLevel): Habit[] {

@@ -1,14 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import { format, getMonth, getYear } from 'date-fns'
+import { format, getMonth, getYear, isFuture, isToday } from 'date-fns'
 import { ko } from 'date-fns/locale'
+import type { EnergyLevel } from '@/types'
 import { useAppStore } from '@/store/useAppStore'
-import { getHabitsForEnergy, getActiveHabits } from '@/store/selectors'
+import { getActiveHabits } from '@/store/selectors'
+import { ENERGY_COLORS } from '@/constants/colors'
 import CalendarGrid from '@/components/calendar/CalendarGrid'
 import MonthStats from '@/components/calendar/MonthStats'
-import EnergyBadge from '@/components/shared/EnergyBadge'
-import EnergyCircle from '@/components/shared/EnergyCircle'
+import EnergySelector from '@/components/today/EnergySelector'
 import BottomSheet from '@/components/shared/BottomSheet'
 
 export default function CalendarPage() {
@@ -18,11 +19,19 @@ export default function CalendarPage() {
 
   const selectedKey = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null
   const selectedLog = selectedKey ? store.dailyLogs[selectedKey] : null
+  const activeHabits = getActiveHabits(store.habits)
 
-  const eligibleHabits = selectedLog
-    ? getHabitsForEnergy(store.habits, selectedLog.energyLevel)
-    : []
-  const allActive = getActiveHabits(store.habits)
+  const canEdit = !!selectedDate && (!isFuture(selectedDate) || isToday(selectedDate))
+
+  const handleToggle = (habitId: string) => {
+    if (!selectedKey || !canEdit || !selectedLog) return
+    store.toggleHabit(selectedKey, habitId)
+  }
+
+  const handleEnergySelect = (level: EnergyLevel) => {
+    if (!selectedKey || !canEdit) return
+    store.setEnergyLevel(selectedKey, level)
+  }
 
   return (
     <div className="px-4 pt-6 space-y-6">
@@ -49,33 +58,41 @@ export default function CalendarPage() {
 
       {/* Day Detail Bottom Sheet */}
       <BottomSheet
-        isOpen={!!selectedDate && !!selectedLog}
+        isOpen={!!selectedDate && canEdit}
         onClose={() => setSelectedDate(null)}
         title={selectedDate ? format(selectedDate, 'M월 d일 EEEE', { locale: ko }) : ''}
       >
+        {/* 에너지 미선택 → 선택하게 */}
+        {!selectedLog && (
+          <div className="space-y-3 pt-2">
+            <EnergySelector
+              selected={null}
+              onChange={handleEnergySelect}
+            />
+          </div>
+        )}
+
+        {/* 에너지 선택됨 → 습관 체크 가능 */}
         {selectedLog && (
           <div className="space-y-4 pt-2">
-            <div className="flex items-center gap-3">
-              <EnergyCircle
-                habits={eligibleHabits.length > 0 ? eligibleHabits : allActive}
-                completedIds={selectedLog.completedHabitIds}
-                energyLevel={selectedLog.energyLevel}
-                size={60}
-              />
-              <div>
-                <p className="text-sm font-medium">에너지</p>
-                <EnergyBadge level={selectedLog.energyLevel} size="md" />
-              </div>
-            </div>
+            <EnergySelector
+              selected={selectedLog.energyLevel}
+              onChange={handleEnergySelect}
+            />
 
             <div className="divide-y divide-border">
-              {(eligibleHabits.length > 0 ? eligibleHabits : allActive).map((habit) => {
+              {activeHabits.map((habit) => {
                 const done = selectedLog.completedHabitIds.includes(habit.id)
+                const color = ENERGY_COLORS[habit.energyLevel]
                 return (
-                  <div key={habit.id} className="flex items-center gap-3 py-2.5">
+                  <button
+                    key={habit.id}
+                    onClick={() => handleToggle(habit.id)}
+                    className="w-full flex items-center gap-3 py-2.5 text-left"
+                  >
                     <div
                       className="w-8 h-8 rounded-lg flex items-center justify-center text-base flex-shrink-0"
-                      style={{ backgroundColor: `${habit.color}22` }}
+                      style={{ backgroundColor: `${color}22` }}
                     >
                       {habit.emoji}
                     </div>
@@ -89,7 +106,7 @@ export default function CalendarPage() {
                       {habit.name}
                     </span>
                     <span className="text-base">{done ? '✅' : '○'}</span>
-                  </div>
+                  </button>
                 )
               })}
             </div>

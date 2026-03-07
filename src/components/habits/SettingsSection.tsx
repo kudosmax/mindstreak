@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef } from 'react'
+import { signOut } from 'next-auth/react'
 import { useAppStore } from '@/store/useAppStore'
 import { exportToJson, importFromJson } from '@/lib/exportImport'
 
@@ -65,6 +66,19 @@ export default function SettingsSection() {
         className="hidden"
         onChange={handleFileChange}
       />
+
+      <h2 className="text-base font-semibold text-muted-foreground pt-4">계정</h2>
+      <div className="rounded-2xl border border-border overflow-hidden">
+        <button
+          onClick={() => signOut()}
+          className="w-full flex items-center gap-3 px-4 py-3.5 text-left hover:bg-muted/50 transition-colors"
+        >
+          <span className="text-lg">🚪</span>
+          <div>
+            <p className="text-sm font-medium text-destructive">로그아웃</p>
+          </div>
+        </button>
+      </div>
     </div>
   )
 }

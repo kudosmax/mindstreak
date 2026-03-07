@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import type { Habit, EnergyLevel } from '@/types'
-import { HABIT_COLORS, DEFAULT_EMOJIS, ENERGY_LABELS } from '@/constants/colors'
+import { DEFAULT_EMOJIS, ENERGY_LABELS } from '@/constants/colors'
 
 interface HabitFormProps {
   initial?: Partial<Habit>
@@ -15,13 +15,12 @@ const ENERGY_LEVELS: EnergyLevel[] = ['low', 'medium', 'high']
 export default function HabitForm({ initial, onSubmit, onCancel }: HabitFormProps) {
   const [name, setName] = useState(initial?.name ?? '')
   const [emoji, setEmoji] = useState(initial?.emoji ?? '✨')
-  const [color, setColor] = useState(initial?.color ?? HABIT_COLORS[0])
   const [energyLevel, setEnergyLevel] = useState<EnergyLevel>(initial?.energyLevel ?? 'medium')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!name.trim()) return
-    onSubmit({ name: name.trim(), emoji, color, energyLevel })
+    onSubmit({ name: name.trim(), emoji, color: '', energyLevel })
   }
 
   return (
@@ -69,27 +68,6 @@ export default function HabitForm({ initial, onSubmit, onCancel }: HabitFormProp
         </div>
       </div>
 
-      {/* Color Picker */}
-      <div>
-        <label className="text-sm font-medium text-muted-foreground mb-1.5 block">색상</label>
-        <div className="flex gap-2 flex-wrap">
-          {HABIT_COLORS.map((c) => (
-            <button
-              key={c}
-              type="button"
-              onClick={() => setColor(c)}
-              className="w-8 h-8 rounded-full transition-transform hover:scale-110"
-              style={{ backgroundColor: c }}
-              aria-label={`색상 ${c}`}
-            >
-              {color === c && (
-                <span className="text-white text-sm font-bold block text-center">✓</span>
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
-
       {/* Energy Level */}
       <div>
         <label className="text-sm font-medium text-muted-foreground mb-1.5 block">에너지 레벨</label>
@@ -109,11 +87,6 @@ export default function HabitForm({ initial, onSubmit, onCancel }: HabitFormProp
             </button>
           ))}
         </div>
-        <p className="text-xs text-muted-foreground mt-1.5">
-          {energyLevel === 'low' && '컨디션이 나쁜 날에도 할 수 있는 습관'}
-          {energyLevel === 'medium' && '평소 컨디션에 하는 습관'}
-          {energyLevel === 'high' && '컨디션이 좋은 날 하는 습관'}
-        </p>
       </div>
 
       {/* Actions */}

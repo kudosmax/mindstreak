@@ -10,8 +10,8 @@ export function getEligibleHabits(habits: Habit[], energyLevel: EnergyLevel): Ha
 }
 
 export function isDaySuccessful(log: DailyLog, habits: Habit[]): boolean {
-  const eligible = getEligibleHabits(habits, log.energyLevel)
-  return eligible.some((h) => log.completedHabitIds.includes(h.id))
+  const activeHabits = habits.filter((h) => !h.archivedAt)
+  return activeHabits.some((h) => log.completedHabitIds.includes(h.id))
 }
 
 export function getCurrentStreak(

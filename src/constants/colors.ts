@@ -12,7 +12,7 @@ export const HABIT_COLORS = [
 ] as const
 
 export const ENERGY_COLORS: Record<EnergyLevel, string> = {
-  high: '#FECA57',   // gold
+  high: '#FF6B6B',   // coral
   medium: '#1DD1A1', // green
   low: '#54A0FF',    // blue
 }

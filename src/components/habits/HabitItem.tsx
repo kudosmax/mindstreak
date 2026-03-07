@@ -1,6 +1,7 @@
 'use client'
 
 import type { Habit } from '@/types'
+import { ENERGY_COLORS } from '@/constants/colors'
 import EnergyBadge from '@/components/shared/EnergyBadge'
 
 interface HabitItemProps {
@@ -14,7 +15,7 @@ export default function HabitItem({ habit, onEdit, onArchive }: HabitItemProps) 
     <div className="flex items-center gap-3 py-3 px-1">
       <div
         className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-        style={{ backgroundColor: `${habit.color}22` }}
+        style={{ backgroundColor: `${ENERGY_COLORS[habit.energyLevel]}22` }}
       >
         {habit.emoji}
       </div>

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { signOut, useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 
 const TABS = [
   { href: '/', label: '오늘', icon: '☀️' },
@@ -35,24 +35,29 @@ export default function BottomNav() {
             </Link>
           )
         })}
-        {session?.user && (
-          <button
-            onClick={() => signOut()}
-            className="flex-none flex flex-col items-center py-3 gap-0.5 px-3 text-muted-foreground hover:text-foreground transition-colors"
-            aria-label="로그아웃"
-          >
-            {session.user.image ? (
-              <img
-                src={session.user.image}
-                alt=""
-                className="w-5 h-5 rounded-full"
-              />
-            ) : (
-              <span className="text-xl leading-none">👤</span>
-            )}
-            <span className="text-xs font-medium">나</span>
-          </button>
-        )}
+        {(() => {
+          const isProfileActive = pathname === '/profile'
+          return (
+            <Link
+              href="/profile"
+              className={`flex-none flex flex-col items-center py-3 gap-0.5 px-3 transition-colors ${
+                isProfileActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+              }`}
+              aria-current={isProfileActive ? 'page' : undefined}
+            >
+              {session?.user?.image ? (
+                <img
+                  src={session.user.image}
+                  alt=""
+                  className="w-5 h-5 rounded-full"
+                />
+              ) : (
+                <span className="text-xl leading-none">👤</span>
+              )}
+              <span className="text-xs font-medium">나</span>
+            </Link>
+          )
+        })()}
       </div>
       <div className="h-safe-area-inset-bottom" />
     </nav>

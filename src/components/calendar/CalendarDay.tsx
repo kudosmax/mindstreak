@@ -1,7 +1,7 @@
 'use client'
 
 import type { DailyLog, Habit } from '@/types'
-import { getHabitsForEnergy } from '@/store/selectors'
+import { getActiveHabits } from '@/store/selectors'
 import EnergyCircle from '@/components/shared/EnergyCircle'
 import { format, isToday, isFuture } from 'date-fns'
 
@@ -17,8 +17,7 @@ export default function CalendarDay({ date, log, habits, isSelected, onClick }: 
   const dayNum = format(date, 'd')
   const future = isFuture(date) && !isToday(date)
 
-  const eligibleHabits = log ? getHabitsForEnergy(habits, log.energyLevel) : []
-  const allHabits = habits.filter((h) => !h.archivedAt)
+  const activeHabits = getActiveHabits(habits)
 
   return (
     <button
@@ -41,7 +40,7 @@ export default function CalendarDay({ date, log, habits, isSelected, onClick }: 
       <div className="w-7 h-7 flex items-center justify-center">
         {log ? (
           <EnergyCircle
-            habits={eligibleHabits.length > 0 ? eligibleHabits : allHabits}
+            habits={activeHabits}
             completedIds={log.completedHabitIds}
             energyLevel={log.energyLevel}
             size={28}

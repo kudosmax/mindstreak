@@ -1,6 +1,7 @@
 'use client'
 
 import type { Habit } from '@/types'
+import { ENERGY_COLORS } from '@/constants/colors'
 import EnergyBadge from '@/components/shared/EnergyBadge'
 
 interface HabitCheckItemProps {
@@ -10,6 +11,8 @@ interface HabitCheckItemProps {
 }
 
 export default function HabitCheckItem({ habit, isCompleted, onToggle }: HabitCheckItemProps) {
+  const color = ENERGY_COLORS[habit.energyLevel]
+
   return (
     <button
       onClick={() => onToggle(habit.id)}
@@ -21,8 +24,8 @@ export default function HabitCheckItem({ habit, isCompleted, onToggle }: HabitCh
       <div
         className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200"
         style={{
-          backgroundColor: isCompleted ? habit.color : 'transparent',
-          border: `2px solid ${habit.color}`,
+          backgroundColor: isCompleted ? color : 'transparent',
+          border: `2px solid ${color}`,
           transform: isCompleted ? 'scale(1.1)' : 'scale(1)',
         }}
       >
@@ -43,7 +46,7 @@ export default function HabitCheckItem({ habit, isCompleted, onToggle }: HabitCh
       <div
         className="w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0 transition-opacity"
         style={{
-          backgroundColor: `${habit.color}22`,
+          backgroundColor: `${color}22`,
           opacity: isCompleted ? 1 : 0.7,
         }}
       >
