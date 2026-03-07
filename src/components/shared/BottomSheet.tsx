@@ -35,7 +35,7 @@ export default function BottomSheet({ isOpen, onClose, title, children }: Bottom
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="relative w-full max-w-sm bg-background rounded-t-2xl shadow-xl animate-in slide-in-from-bottom duration-300 max-h-[90vh] overflow-y-auto"
+        className="relative w-full max-w-md bg-background rounded-t-2xl shadow-xl animate-in slide-in-from-bottom duration-300 max-h-[90vh] overflow-y-auto"
       >
         <div className="flex items-center justify-between px-4 pt-4 pb-2">
           <div className="w-10 h-1 bg-muted rounded-full mx-auto absolute left-1/2 -translate-x-1/2 top-2" />
@@ -49,7 +49,7 @@ export default function BottomSheet({ isOpen, onClose, title, children }: Bottom
             ✕
           </button>
         </div>
-        <div className="px-4 pb-8">{children}</div>
+        <div className="px-5 pb-8">{children}</div>
       </div>
     </div>
   )
