@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import type { Habit, EnergyLevel } from '@/types'
 import { DEFAULT_EMOJIS, ENERGY_LABELS } from '@/constants/colors'
 
@@ -16,6 +16,7 @@ export default function HabitForm({ initial, onSubmit, onCancel }: HabitFormProp
   const [name, setName] = useState(initial?.name ?? '')
   const [emoji, setEmoji] = useState(initial?.emoji ?? '✨')
   const [energyLevel, setEnergyLevel] = useState<EnergyLevel>(initial?.energyLevel ?? 'medium')
+  const emojiInputRef = useRef<HTMLInputElement>(null)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -50,6 +51,24 @@ export default function HabitForm({ initial, onSubmit, onCancel }: HabitFormProp
       {/* Emoji Picker */}
       <div>
         <label className="text-sm font-medium text-muted-foreground mb-1.5 block">이모지</label>
+        <div className="relative mb-2">
+          <input
+            ref={emojiInputRef}
+            type="text"
+            value=""
+            onChange={(e) => {
+              const value = e.target.value
+              if (!value) return
+              const segments = [...new Intl.Segmenter().segment(value)]
+              const last = segments[segments.length - 1]?.segment ?? ''
+              if (last) setEmoji(last)
+              e.target.value = ''
+              e.target.blur()
+            }}
+            className="w-full h-12 rounded-xl border border-border bg-background px-3 text-sm text-center caret-transparent"
+            placeholder="탭하여 이모지 직접 입력"
+          />
+        </div>
         <div className="grid grid-cols-10 gap-1">
           {DEFAULT_EMOJIS.map((e) => (
             <button
