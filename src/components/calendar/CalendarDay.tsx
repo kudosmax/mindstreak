@@ -29,9 +29,9 @@ export default function CalendarDay({ date, log, habits, isSelected, onClick }: 
       aria-label={`${format(date, 'yyyy년 M월 d일')}`}
     >
       <span
-        className={`text-xs font-medium leading-none ${
+        className={`text-xs font-medium leading-none w-5 h-5 flex items-center justify-center ${
           isToday(date)
-            ? 'bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center'
+            ? 'bg-primary text-primary-foreground rounded-full'
             : 'text-foreground'
         }`}
       >
