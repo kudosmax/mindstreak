@@ -40,7 +40,7 @@ export default function BottomNav() {
           return (
             <Link
               href="/profile"
-              className={`flex-none flex flex-col items-center py-3 gap-0.5 px-3 transition-colors ${
+              className={`flex-1 flex flex-col items-center py-3 gap-0.5 transition-colors ${
                 isProfileActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
               }`}
               aria-current={isProfileActive ? 'page' : undefined}
@@ -59,7 +59,7 @@ export default function BottomNav() {
           )
         })()}
       </div>
-      <div className="h-safe-area-inset-bottom" />
+      <div className="pb-[env(safe-area-inset-bottom)]" />
     </nav>
   )
 }

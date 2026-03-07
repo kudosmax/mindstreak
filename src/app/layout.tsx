@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Geist } from 'next/font/google'
 import './globals.css'
 import { SessionProvider } from 'next-auth/react'
@@ -6,6 +6,10 @@ import BottomNav from '@/components/layout/BottomNav'
 import HydrateStore from '@/components/layout/HydrateStore'
 
 const geist = Geist({ subsets: ['latin'] })
+
+export const viewport: Viewport = {
+  viewportFit: 'cover',
+}
 
 export const metadata: Metadata = {
   title: 'MindStreak',
