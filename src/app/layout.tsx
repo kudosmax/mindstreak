@@ -4,6 +4,7 @@ import './globals.css'
 import { SessionProvider } from 'next-auth/react'
 import BottomNav from '@/components/layout/BottomNav'
 import HydrateStore from '@/components/layout/HydrateStore'
+import RegisterSW from '@/components/layout/RegisterSW'
 
 const geist = Geist({ subsets: ['latin'] })
 
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={geist.className}>
         <SessionProvider>
           <HydrateStore />
+          <RegisterSW />
           <div className="min-h-screen bg-background">
             <main className="mx-auto max-w-sm min-h-screen pb-24">
               {children}

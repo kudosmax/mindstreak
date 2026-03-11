@@ -1,7 +1,7 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useAppStore } from '@/store/useAppStore'
 import { exportToJson, importFromJson } from '@/lib/exportImport'
 import { signOut } from 'next-auth/react'
@@ -14,6 +14,49 @@ export default function ProfilePage() {
   const [isEditingName, setIsEditingName] = useState(false)
   const [nameInput, setNameInput] = useState('')
   const [isSaving, setIsSaving] = useState(false)
+  const [notifEnabled, setNotifEnabled] = useState(false)
+  const [notifSupported, setNotifSupported] = useState(false)
+
+  useEffect(() => {
+    setNotifSupported('serviceWorker' in navigator && 'PushManager' in window)
+    if ('Notification' in window) {
+      setNotifEnabled(Notification.permission === 'granted')
+    }
+  }, [])
+
+  const handleNotifToggle = async () => {
+    if (!notifSupported) return
+
+    if (notifEnabled) {
+      const reg = await navigator.serviceWorker.ready
+      const sub = await reg.pushManager.getSubscription()
+      if (sub) {
+        await sub.unsubscribe()
+        await fetch('/api/push/subscribe', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ endpoint: sub.endpoint }),
+        })
+      }
+      setNotifEnabled(false)
+      return
+    }
+
+    const permission = await Notification.requestPermission()
+    if (permission !== 'granted') return
+
+    const reg = await navigator.serviceWorker.ready
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+    })
+    await fetch('/api/push/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(sub),
+    })
+    setNotifEnabled(true)
+  }
 
   const handleExport = () => {
     exportToJson({
@@ -152,6 +195,30 @@ export default function ProfilePage() {
             onChange={handleFileChange}
           />
         </div>
+
+        {/* 알림 섹션 */}
+        {notifSupported && (
+          <div className="space-y-3">
+            <h2 className="text-base font-semibold text-muted-foreground">알림</h2>
+            <div className="rounded-2xl border border-border overflow-hidden">
+              <button
+                onClick={handleNotifToggle}
+                className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-muted/50 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-lg">🔔</span>
+                  <div className="text-left">
+                    <p className="text-sm font-medium">매일 저녁 9시 알림</p>
+                    <p className="text-xs text-muted-foreground">오늘 기록 안 했을 때 알려드려요</p>
+                  </div>
+                </div>
+                <div className={`w-11 h-6 rounded-full transition-colors ${notifEnabled ? 'bg-primary' : 'bg-muted'}`}>
+                  <div className={`w-5 h-5 rounded-full bg-white shadow m-0.5 transition-transform ${notifEnabled ? 'translate-x-5' : 'translate-x-0'}`} />
+                </div>
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* 계정 섹션 */}
         <div className="space-y-3">
