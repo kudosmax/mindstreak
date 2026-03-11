@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
           { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
           JSON.stringify({
             title: 'MindStreak 🔥',
-            body: '오늘 습관을 아직 기록하지 않았어요!',
+            body: '오늘의 습관을 기록해 주세요',
             url: '/',
           })
         )

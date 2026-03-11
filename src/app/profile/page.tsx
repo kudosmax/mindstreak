@@ -208,7 +208,7 @@ export default function ProfilePage() {
                 <div className="flex items-center gap-3">
                   <span className="text-lg">🔔</span>
                   <div className="text-left">
-                    <p className="text-sm font-medium">매일 저녁 9시 알림</p>
+                    <p className="text-sm font-medium">매일 저녁 9시 30분 알림</p>
                     <p className="text-xs text-muted-foreground">오늘 기록 안 했을 때 알려드려요</p>
                   </div>
                 </div>
