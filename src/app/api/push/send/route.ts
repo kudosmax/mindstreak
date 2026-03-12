@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import webpush from 'web-push'
 import { getDb } from '@/lib/db'
-import { pushSubscriptions, dailyLogs } from '@/lib/db/schema'
-import { eq, and } from 'drizzle-orm'
-import { format } from 'date-fns'
-import { toZonedTime } from 'date-fns-tz'
+import { pushSubscriptions } from '@/lib/db/schema'
 
 webpush.setVapidDetails(
   process.env.VAPID_EMAIL!,
@@ -20,26 +17,12 @@ export async function GET(request: NextRequest) {
 
   try {
     const db = getDb()
-    const todayKST = format(toZonedTime(new Date(), 'Asia/Seoul'), 'yyyy-MM-dd')
-
     const subs = await db.select().from(pushSubscriptions)
 
     let sent = 0
-    let skipped = 0
 
     await Promise.allSettled(
       subs.map(async (sub) => {
-        const [log] = await db
-          .select()
-          .from(dailyLogs)
-          .where(and(eq(dailyLogs.userId, sub.userId), eq(dailyLogs.date, todayKST)))
-          .limit(1)
-
-        if (log) {
-          skipped++
-          return
-        }
-
         await webpush.sendNotification(
           { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
           JSON.stringify({
@@ -52,7 +35,7 @@ export async function GET(request: NextRequest) {
       })
     )
 
-    return NextResponse.json({ ok: true, sent, skipped })
+    return NextResponse.json({ ok: true, sent })
   } catch (error) {
     console.error('Push send failed:', error)
     return NextResponse.json({ error: 'Failed to send' }, { status: 500 })

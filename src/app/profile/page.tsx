@@ -209,7 +209,7 @@ export default function ProfilePage() {
                   <span className="text-lg">🔔</span>
                   <div className="text-left">
                     <p className="text-sm font-medium">매일 저녁 9시 30분 알림</p>
-                    <p className="text-xs text-muted-foreground">오늘 기록 안 했을 때 알려드려요</p>
+                    <p className="text-xs text-muted-foreground">매일 습관 기록을 알려드려요</p>
                   </div>
                 </div>
                 <div className={`w-11 h-6 rounded-full transition-colors ${notifEnabled ? 'bg-primary' : 'bg-muted'}`}>
