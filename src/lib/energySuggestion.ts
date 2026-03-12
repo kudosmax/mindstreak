@@ -34,7 +34,5 @@ export function getEnergySuggestion(
   const topHabit = habitMap.get(topId)
   if (!topHabit) return null
 
-  const rate = Math.round((topCount / logsForEnergy.length) * 100)
-
-  return `비슷한 에너지일 때 ${topHabit.emoji} ${topHabit.name}을 ${rate}% 했어요`
+  return `이런 에너지일 때 ${topHabit.emoji} ${topHabit.name}을(를) 가장 많이 했어요`
 }
