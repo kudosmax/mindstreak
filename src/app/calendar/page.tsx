@@ -9,6 +9,7 @@ import { getActiveHabits } from '@/store/selectors'
 import { ENERGY_COLORS } from '@/constants/colors'
 import CalendarGrid from '@/components/calendar/CalendarGrid'
 import MonthStats from '@/components/calendar/MonthStats'
+import EnergyFlow from '@/components/calendar/EnergyFlow'
 import EnergySelector from '@/components/today/EnergySelector'
 import BottomSheet from '@/components/shared/BottomSheet'
 
@@ -45,6 +46,13 @@ export default function CalendarPage() {
           setViewMonth(date)
         }}
         selectedDate={selectedDate}
+      />
+
+      {/* Energy Flow */}
+      <EnergyFlow
+        dailyLogs={store.dailyLogs}
+        year={getYear(viewMonth)}
+        month={getMonth(viewMonth)}
       />
 
       {/* Month Stats */}

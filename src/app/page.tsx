@@ -14,6 +14,7 @@ import EnergySelector from '@/components/today/EnergySelector'
 import HabitCheckItem from '@/components/today/HabitCheckItem'
 import StreakBadge from '@/components/today/StreakBadge'
 import EnergyCircle from '@/components/shared/EnergyCircle'
+import { getEnergySuggestion } from '@/lib/energySuggestion'
 import BottomSheet from '@/components/shared/BottomSheet'
 import HabitForm from '@/components/habits/HabitForm'
 
@@ -38,6 +39,9 @@ export default function TodayPage() {
   const hasHabits = activeHabits.length > 0
   const completedIds = todayLog?.completedHabitIds ?? []
   const completedCount = activeHabits.filter((h) => completedIds.includes(h.id)).length
+  const suggestion = todayLog
+    ? getEnergySuggestion(todayLog.energyLevel, store.dailyLogs, store.habits)
+    : null
 
   return (
     <div className="px-4 pt-6 space-y-6">
@@ -102,6 +106,13 @@ export default function TodayPage() {
                 </p>
               </div>
             </div>
+          )}
+
+          {/* Energy suggestion */}
+          {suggestion && completedCount === 0 && (
+            <p className="text-xs text-muted-foreground text-center px-2 -mt-2">
+              💡 {suggestion}
+            </p>
           )}
 
           {/* All habits */}
